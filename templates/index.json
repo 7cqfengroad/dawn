@@ -57,36 +57,6 @@
         "show_text_below": false
       }
     },
-    "rich_text": {
-      "type": "rich-text",
-      "blocks": {
-        "heading": {
-          "type": "heading",
-          "settings": {
-            "heading": "Talk about your brand",
-            "heading_size": "h1"
-          }
-        },
-        "text": {
-          "type": "text",
-          "settings": {
-            "text": "<p>HUO是专为渴望更亲密、更愉悦伴侣关系的你们而生。我们深知，爱的语言需要不断探索与更新。</p><p>我们精心设计每一款产品，旨在成为你们开启深度对话、增进默契、共享新奇体验的钥匙。从优雅易用的入门之选，到创意十足的探索装备， HUO提供安全、高品质的选择，让每一次亲密接触都充满惊喜与连接感。</p><p>放下羞涩，拥抱好奇。HUO，与你一起，用心经营爱的温度，解锁只属于你们的愉悦密码。让爱，更有趣。</p>"
-          }
-        }
-      },
-      "block_order": [
-        "heading",
-        "text"
-      ],
-      "settings": {
-        "desktop_content_position": "center",
-        "content_alignment": "center",
-        "color_scheme": "scheme-1",
-        "full_width": true,
-        "padding_top": 40,
-        "padding_bottom": 0
-      }
-    },
     "featured_collection": {
       "type": "featured-collection",
       "settings": {
@@ -220,14 +190,37 @@
         "padding_top": 36,
         "padding_bottom": 36
       }
+    },
+    "rich_text_RPjCDw": {
+      "type": "rich-text",
+      "blocks": {
+        "text_b7HgpB": {
+          "type": "text",
+          "settings": {
+            "text": "<p>HUO是专为渴望更亲密、更愉悦伴侣关系的你们而生。我们深知，爱的语言需要不断探索与更新。</p><p>我们精心设计每一款产品，旨在成为你们开启深度对话、增进默契、共享新奇体验的钥匙。从优雅易用的入门之选，到创意十足的探索装备， HUO提供安全、高品质的选择，让每一次亲密接触都充满惊喜与连接感。</p><p>放下羞涩，拥抱好奇。HUO，与你一起，用心经营爱的温度，解锁只属于你们的愉悦密码。让爱，更有趣。<br/><br/><br/><br/></p>"
+          }
+        }
+      },
+      "block_order": [
+        "text_b7HgpB"
+      ],
+      "name": "t:sections.rich-text.presets.name",
+      "settings": {
+        "desktop_content_position": "center",
+        "content_alignment": "center",
+        "color_scheme": "scheme-4",
+        "full_width": true,
+        "padding_top": 40,
+        "padding_bottom": 52
+      }
     }
   },
   "order": [
     "image_banner",
-    "rich_text",
     "featured_collection",
     "collage",
     "video",
-    "multicolumn"
+    "multicolumn",
+    "rich_text_RPjCDw"
   ]
 }
