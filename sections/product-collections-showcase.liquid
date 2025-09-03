@@ -1,100 +1,51 @@
-{{ 'component-product-collections-showcase.css' | asset_url | stylesheet_tag }}
-{{ 'product-collections-showcase.js' | asset_url | script_tag }}
-
-<script src="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.js"></script>
-<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.css">
-
-<div class="product-collections-showcase page-width">
-  <div class="collections-container">
-    <!-- 左侧导航区 -->
-    <div class="collections-nav leftside">
-      <ul class="collections-list" role="list">
-        {% for block in section.blocks %}
-          {% if block.type == 'collection_item' %}
-            <li class="collections-item {% if forloop.first %}is-active{% endif %}" 
-                data-collection-index="{{ forloop.index0 }}">
-              <a href="{{ collections[block.settings.collection].url }}" 
-                 class="collections-link">
-                {{ block.settings.collection_name | default: collections[block.settings.collection].title }}
-              </a>
-            </li>
-          {% endif %}
-        {% endfor %}
-      </ul>
-    </div>
-
-    <!-- 右侧内容区 -->
-    <div class="collections-content rightside">
-      {% for block in section.blocks %}
-        {% if block.type == 'collection_item' %}
-          {% assign collection = collections[block.settings.collection] %}
-          <div class="collection-showcase {% if forloop.first %}is-active{% endif %}" 
-               data-collection-index="{{ forloop.index0 }}">
-            
-            <!-- Swiper轮播容器 -->
-            <div class="swiper collections-swiper" data-swiper-id="shopslider-{{ forloop.index0 }}">
-              <div class="swiper-wrapper">
-                {% for product in collection.products limit: section.settings.products_limit %}
-                  <div class="swiper-slide">
-                    <div class="product-card">
-                      <!-- 产品图片区域 -->
-                      <div class="product-image">
-                        <a href="{{ product.url }}" class="product-link">
-                          {% if product.featured_media %}
-                            {{ product.featured_media | image_url: width: 750 | image_tag:
-                              loading: 'lazy',
-                              class: 'product-img',
-                              sizes: '100vw',
-                              widths: '375, 550, 750',
-                              alt: product.featured_media.alt | default: product.title
-                            }}
-                          {% else %}
-                            <div class="product-img placeholder">
-                              {{ 'image' | placeholder_svg_tag: 'placeholder-svg' }}
-                            </div>
-                          {% endif %}
-                        </a>
-                      </div>
-                      
-                      <!-- 悬停效果区域 -->
-                      <div class="product-hover-content">
-                        <h2 class="product-title">
-                          <small>{{ product.title }}</small>
-                        </h2>
-                      </div>
-                    </div>
-                  </div>
-                {% endfor %}
-              </div>
-              
-              <!-- 导航控制按钮 -->
-              <div class="swiper-navigation">
-                <div class="swiper-button-prev" data-swiper-id="shopslider-{{ forloop.index0 }}" aria-label="Previous product">
-                  <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-                    <path d="M15 18L9 12L15 6" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
-                  </svg>
-                </div>
-                <div class="swiper-button-next" data-swiper-id="shopslider-{{ forloop.index0 }}" aria-label="Next product">
-                  <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-                    <path d="M9 6L15 12L9 18" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
-                  </svg>
-                </div>
-              </div>
-            </div>
-
-            <!-- View Collection 按钮 -->
-            <div class="collection-cta">
-              <a href="{{ collection.url }}" class="view-collection-btn">
-                <span>{{ section.settings.cta_text | default: 'View Collection' }}</span>
-                <span class="btn-underline"></span>
-              </a>
-            </div>
-          </div>
-        {% endif %}
-      {% endfor %}
+<!-- 测试版本：简化的商品集合展示 -->
+<div class="product-collections-showcase page-width section-{{ section.id }}-padding">
+  <div style="padding: 4rem 0; text-align: center; background: #f9f9f9; border: 2px dashed #ccc;">
+    <h2 style="font-size: 2rem; margin-bottom: 2rem;">商品集合展示组件</h2>
+    <p style="font-size: 1.2rem; color: #666;">Section已成功加载！</p>
+    
+    {% if section.blocks.size > 0 %}
+      <div style="margin-top: 2rem;">
+        <h3>配置的集合：</h3>
+        <ul style="list-style: none; padding: 0;">
+          {% for block in section.blocks %}
+            {% if block.type == 'collection_item' %}
+              <li style="margin: 1rem 0; font-size: 1.1rem;">
+                {{ block.settings.collection_name | default: 'Collection ' | append: forloop.index }}
+                {% if collections[block.settings.collection] %}
+                  - ✅ 已连接到集合: {{ collections[block.settings.collection].title }}
+                {% else %}
+                  - ⚠️ 尚未配置集合
+                {% endif %}
+              </li>
+            {% endif %}
+          {% endfor %}
+        </ul>
+      </div>
+    {% else %}
+      <p style="color: #999;">暂无配置的集合块</p>
+    {% endif %}
+    
+    <div style="margin-top: 2rem; font-size: 0.9rem; color: #888;">
+      <p>Section ID: {{ section.id }}</p>
+      <p>Blocks数量: {{ section.blocks.size }}</p>
     </div>
   </div>
 </div>
+
+<style>
+.section-{{ section.id }}-padding {
+  padding-top: {{ section.settings.padding_top | times: 0.75 | round: 0 }}px;
+  padding-bottom: {{ section.settings.padding_bottom | times: 0.75 | round: 0 }}px;
+}
+
+@media screen and (min-width: 750px) {
+  .section-{{ section.id }}-padding {
+    padding-top: {{ section.settings.padding_top }}px;
+    padding-bottom: {{ section.settings.padding_bottom }}px;
+  }
+}
+</style>
 
 {% schema %}
 {
@@ -105,7 +56,7 @@
     {
       "type": "number",
       "id": "products_limit",
-      "label": "Products per collection",
+      "label": "Products per collection", 
       "default": 8,
       "info": "Maximum number of products to show in each collection carousel"
     },
@@ -114,6 +65,26 @@
       "id": "cta_text",
       "label": "Call to action text",
       "default": "View Collection"
+    },
+    {
+      "type": "range",
+      "id": "padding_top",
+      "min": 0,
+      "max": 100,
+      "step": 4,
+      "unit": "px",
+      "label": "Top padding",
+      "default": 36
+    },
+    {
+      "type": "range", 
+      "id": "padding_bottom",
+      "min": 0,
+      "max": 100,
+      "step": 4,
+      "unit": "px",
+      "label": "Bottom padding",
+      "default": 36
     }
   ],
   "blocks": [
@@ -123,7 +94,7 @@
       "settings": [
         {
           "type": "collection",
-          "id": "collection",
+          "id": "collection", 
           "label": "Collection"
         },
         {
@@ -140,19 +111,34 @@
       "name": "Product Collections Showcase",
       "blocks": [
         {
-          "type": "collection_item"
+          "type": "collection_item",
+          "settings": {
+            "collection_name": "Bracelets"
+          }
         },
         {
-          "type": "collection_item"
+          "type": "collection_item", 
+          "settings": {
+            "collection_name": "Earclips"
+          }
         },
         {
-          "type": "collection_item"
+          "type": "collection_item",
+          "settings": {
+            "collection_name": "Cuffs" 
+          }
         },
         {
-          "type": "collection_item"
+          "type": "collection_item",
+          "settings": {
+            "collection_name": "Rings"
+          }
         },
         {
-          "type": "collection_item"
+          "type": "collection_item",
+          "settings": {
+            "collection_name": "Necklaces"
+          }
         }
       ]
     }
