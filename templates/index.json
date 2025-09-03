@@ -145,6 +145,57 @@
         "padding_bottom": 36
       }
     },
+    "product_collections_showcase": {
+      "type": "product-collections-showcase",
+      "blocks": {
+        "collection_1": {
+          "type": "collection_item",
+          "settings": {
+            "collection": "",
+            "collection_name": "Bracelets"
+          }
+        },
+        "collection_2": {
+          "type": "collection_item",
+          "settings": {
+            "collection": "",
+            "collection_name": "Earclips"
+          }
+        },
+        "collection_3": {
+          "type": "collection_item",
+          "settings": {
+            "collection": "",
+            "collection_name": "Cuffs"
+          }
+        },
+        "collection_4": {
+          "type": "collection_item",
+          "settings": {
+            "collection": "",
+            "collection_name": "Rings"
+          }
+        },
+        "collection_5": {
+          "type": "collection_item",
+          "settings": {
+            "collection": "",
+            "collection_name": "Necklaces"
+          }
+        }
+      },
+      "block_order": [
+        "collection_1",
+        "collection_2",
+        "collection_3",
+        "collection_4",
+        "collection_5"
+      ],
+      "settings": {
+        "products_limit": 8,
+        "cta_text": "View Collection"
+      }
+    },
     "multicolumn": {
       "type": "multicolumn",
       "blocks": {
@@ -203,6 +254,7 @@
     "image_banner",
     "rich_text",
     "featured_collection",
+    "product_collections_showcase",
     "collage",
     "video",
     "multicolumn"
