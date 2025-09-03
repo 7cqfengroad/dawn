@@ -1,0 +1,39 @@
+<div style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); color: white; padding: 5rem 2rem; text-align: center; margin: 2rem 0;">
+  <div class="page-width">
+    <h1 style="font-size: 3rem; margin-bottom: 1rem;">🎉 Section 测试成功！</h1>
+    <p style="font-size: 1.5rem; opacity: 0.9;">如果你能看到这个彩色区域，说明Section机制正常工作</p>
+    
+    {% if section.settings.test_message != blank %}
+      <div style="background: rgba(255,255,255,0.2); padding: 2rem; border-radius: 10px; margin-top: 2rem;">
+        <h2>自定义消息：</h2>
+        <p style="font-size: 1.2rem;">{{ section.settings.test_message }}</p>
+      </div>
+    {% endif %}
+    
+    <div style="margin-top: 3rem; font-size: 0.9rem; opacity: 0.8;">
+      <p>Section ID: {{ section.id }}</p>
+      <p>当前时间: {{ 'now' | date: '%Y-%m-%d %H:%M:%S' }}</p>
+    </div>
+  </div>
+</div>
+
+{% schema %}
+{
+  "name": "🧪 Test Section",
+  "tag": "section",
+  "class": "section",
+  "settings": [
+    {
+      "type": "text",
+      "id": "test_message",
+      "label": "测试消息",
+      "default": "这是一个测试Section！"
+    }
+  ],
+  "presets": [
+    {
+      "name": "🧪 Test Section"
+    }
+  ]
+}
+{% endschema %} 

@@ -1,51 +1,162 @@
-<!-- 测试版本：简化的商品集合展示 -->
-<div class="product-collections-showcase page-width section-{{ section.id }}-padding">
-  <div style="padding: 4rem 0; text-align: center; background: #f9f9f9; border: 2px dashed #ccc;">
-    <h2 style="font-size: 2rem; margin-bottom: 2rem;">商品集合展示组件</h2>
-    <p style="font-size: 1.2rem; color: #666;">Section已成功加载！</p>
-    
-    {% if section.blocks.size > 0 %}
-      <div style="margin-top: 2rem;">
-        <h3>配置的集合：</h3>
-        <ul style="list-style: none; padding: 0;">
-          {% for block in section.blocks %}
-            {% if block.type == 'collection_item' %}
-              <li style="margin: 1rem 0; font-size: 1.1rem;">
+{{ 'component-product-collections-showcase.css' | asset_url | stylesheet_tag }}
+{{ 'product-collections-showcase.js' | asset_url | script_tag }}
+
+<script src="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.js"></script>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.css">
+
+<div class="product-collections-showcase page-width">
+  <div class="collections-container">
+    <!-- 左侧导航区 -->
+    <div class="collections-nav leftside">
+      <ul class="collections-list" role="list">
+        {% for block in section.blocks %}
+          {% if block.type == 'collection_item' %}
+            <li class="collections-item {% if forloop.first %}is-active{% endif %}" 
+                data-collection-index="{{ forloop.index0 }}">
+              <a href="#" class="collections-link">
                 {{ block.settings.collection_name | default: 'Collection ' | append: forloop.index }}
-                {% if collections[block.settings.collection] %}
-                  - ✅ 已连接到集合: {{ collections[block.settings.collection].title }}
+              </a>
+            </li>
+          {% endif %}
+        {% endfor %}
+      </ul>
+    </div>
+
+    <!-- 右侧内容区 -->
+    <div class="collections-content rightside">
+      {% for block in section.blocks %}
+        {% if block.type == 'collection_item' %}
+          {% assign collection = collections[block.settings.collection] %}
+          <div class="collection-showcase {% if forloop.first %}is-active{% endif %}" 
+               data-collection-index="{{ forloop.index0 }}">
+            
+            <!-- 状态显示 -->
+            <div class="collection-status" style="text-align: center; margin-bottom: 2rem; padding: 1rem; background: #f9f9f9; border-radius: 8px;">
+              {% if collection and collection.products.size > 0 %}
+                <p style="color: #28a745; font-weight: bold;">✅ 真实集合数据 - {{ collection.title }} ({{ collection.products.size }} 个产品)</p>
+              {% else %}
+                <p style="color: #ff6b35; font-weight: bold;">🎭 演示模式 - {{ block.settings.collection_name | default: 'Collection ' | append: forloop.index }}</p>
+                <small style="color: #666;">没有配置集合时显示的占位符内容</small>
+              {% endif %}
+            </div>
+            
+            <!-- Swiper轮播容器 -->
+            <div class="swiper collections-swiper" data-swiper-id="shopslider-{{ forloop.index0 }}">
+              <div class="swiper-wrapper">
+                
+                {% if collection and collection.products.size > 0 %}
+                  <!-- 真实产品数据 -->
+                  {% for product in collection.products limit: section.settings.products_limit %}
+                    <div class="swiper-slide">
+                      <div class="product-card">
+                        <div class="product-image">
+                          <a href="{{ product.url }}" class="product-link">
+                            {% if product.featured_media %}
+                              {{ product.featured_media | image_url: width: 750 | image_tag:
+                                loading: 'lazy',
+                                class: 'product-img',
+                                sizes: '100vw',
+                                widths: '375, 550, 750',
+                                alt: product.featured_media.alt | default: product.title
+                              }}
+                            {% else %}
+                              <div class="product-img placeholder">
+                                {{ 'image' | placeholder_svg_tag: 'placeholder-svg' }}
+                              </div>
+                            {% endif %}
+                          </a>
+                        </div>
+                        <div class="product-hover-content">
+                          <h2 class="product-title">
+                            <small>{{ product.title }}</small>
+                          </h2>
+                        </div>
+                      </div>
+                    </div>
+                  {% endfor %}
+                  
                 {% else %}
-                  - ⚠️ 尚未配置集合
+                  <!-- 占位符产品数据 -->
+                  {% assign demo_products = 'Elegant Gold Ring,Silver Chain Bracelet,Diamond Earrings,Pearl Necklace,Ruby Cufflinks,Platinum Watch,Emerald Pendant,Sapphire Ring' | split: ',' %}
+                  {% assign demo_images = 'https://cdn.shopify.com/s/files/1/0070/7032/files/trending-products_c8d0d15c-9afc-47e3-9ba0-7cd6bb3cc070.png,https://cdn.shopify.com/s/files/1/0070/7032/files/how-to-start-a-business_4578cf31-0f25-4e59-8bd6-a05505f78c52.png' | split: ',' %}
+                  
+                  {% for i in (1..8) %}
+                    <div class="swiper-slide">
+                      <div class="product-card">
+                        <div class="product-image">
+                          <a href="#" class="product-link">
+                            <div class="product-img placeholder-demo" style="background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%); height: 300px; display: flex; align-items: center; justify-content: center; color: white; font-size: 1.2rem; text-align: center;">
+                              <div>
+                                <div style="font-size: 3rem; margin-bottom: 1rem;">💎</div>
+                                <div>{{ block.settings.collection_name | default: 'Sample' }}</div>
+                                <div style="font-size: 0.9rem; opacity: 0.8;">Demo Product {{ i }}</div>
+                              </div>
+                            </div>
+                          </a>
+                        </div>
+                        <div class="product-hover-content">
+                          <h2 class="product-title">
+                            <small>{{ demo_products[forloop.index0] | default: 'Demo Product' }} {{ i }}</small>
+                          </h2>
+                        </div>
+                      </div>
+                    </div>
+                  {% endfor %}
                 {% endif %}
-              </li>
-            {% endif %}
-          {% endfor %}
-        </ul>
-      </div>
-    {% else %}
-      <p style="color: #999;">暂无配置的集合块</p>
-    {% endif %}
-    
-    <div style="margin-top: 2rem; font-size: 0.9rem; color: #888;">
-      <p>Section ID: {{ section.id }}</p>
-      <p>Blocks数量: {{ section.blocks.size }}</p>
+                
+              </div>
+              
+              <!-- 导航控制按钮 -->
+              <div class="swiper-navigation">
+                <div class="swiper-button-prev" data-swiper-id="shopslider-{{ forloop.index0 }}" aria-label="Previous product">
+                  <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    <path d="M15 18L9 12L15 6" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                  </svg>
+                </div>
+                <div class="swiper-button-next" data-swiper-id="shopslider-{{ forloop.index0 }}" aria-label="Next product">
+                  <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    <path d="M9 6L15 12L9 18" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                  </svg>
+                </div>
+              </div>
+            </div>
+
+            <!-- View Collection 按钮 -->
+            <div class="collection-cta">
+              {% if collection %}
+                <a href="{{ collection.url }}" class="view-collection-btn">
+                  <span>{{ section.settings.cta_text | default: 'View Collection' }}</span>
+                  <span class="btn-underline"></span>
+                </a>
+              {% else %}
+                <a href="#" class="view-collection-btn" onclick="alert('这是演示模式，请配置真实的商品集合')">
+                  <span>{{ section.settings.cta_text | default: 'View Collection' }} (Demo)</span>
+                  <span class="btn-underline"></span>
+                </a>
+              {% endif %}
+            </div>
+          </div>
+        {% endif %}
+      {% endfor %}
     </div>
   </div>
 </div>
 
-<style>
-.section-{{ section.id }}-padding {
-  padding-top: {{ section.settings.padding_top | times: 0.75 | round: 0 }}px;
-  padding-bottom: {{ section.settings.padding_bottom | times: 0.75 | round: 0 }}px;
-}
-
-@media screen and (min-width: 750px) {
-  .section-{{ section.id }}-padding {
-    padding-top: {{ section.settings.padding_top }}px;
-    padding-bottom: {{ section.settings.padding_bottom }}px;
-  }
-}
-</style>
+<!-- 演示说明 -->
+<div style="background: #e3f2fd; border: 1px solid #2196f3; border-radius: 8px; padding: 2rem; margin: 2rem auto; max-width: 800px; text-align: center;">
+  <h3 style="color: #1976d2; margin-bottom: 1rem;">🎯 演示说明</h3>
+  <p style="color: #333; margin-bottom: 1rem;">
+    当前为<strong>演示模式</strong>，显示占位符内容。要使用真实数据：
+  </p>
+  <ol style="text-align: left; color: #666; max-width: 500px; margin: 0 auto;">
+    <li>在主题编辑器中找到这个Section</li>
+    <li>为每个Collection block选择对应的商品集合</li>
+    <li>保存后即可看到真实的产品数据</li>
+  </ol>
+  <p style="margin-top: 1rem; font-size: 0.9rem; color: #666;">
+    <strong>测试交互：</strong> 点击左侧分类名称切换内容，使用左右箭头控制轮播
+  </p>
+</div>
 
 {% schema %}
 {
@@ -56,7 +167,7 @@
     {
       "type": "number",
       "id": "products_limit",
-      "label": "Products per collection", 
+      "label": "Products per collection",
       "default": 8,
       "info": "Maximum number of products to show in each collection carousel"
     },
@@ -65,26 +176,6 @@
       "id": "cta_text",
       "label": "Call to action text",
       "default": "View Collection"
-    },
-    {
-      "type": "range",
-      "id": "padding_top",
-      "min": 0,
-      "max": 100,
-      "step": 4,
-      "unit": "px",
-      "label": "Top padding",
-      "default": 36
-    },
-    {
-      "type": "range", 
-      "id": "padding_bottom",
-      "min": 0,
-      "max": 100,
-      "step": 4,
-      "unit": "px",
-      "label": "Bottom padding",
-      "default": 36
     }
   ],
   "blocks": [
@@ -94,7 +185,7 @@
       "settings": [
         {
           "type": "collection",
-          "id": "collection", 
+          "id": "collection",
           "label": "Collection"
         },
         {
@@ -117,7 +208,7 @@
           }
         },
         {
-          "type": "collection_item", 
+          "type": "collection_item",
           "settings": {
             "collection_name": "Earclips"
           }
@@ -125,7 +216,7 @@
         {
           "type": "collection_item",
           "settings": {
-            "collection_name": "Cuffs" 
+            "collection_name": "Cuffs"
           }
         },
         {
