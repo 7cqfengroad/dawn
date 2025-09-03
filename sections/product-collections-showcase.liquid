@@ -1,0 +1,161 @@
+{{ 'component-product-collections-showcase.css' | asset_url | stylesheet_tag }}
+{{ 'product-collections-showcase.js' | asset_url | script_tag }}
+
+<script src="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.js"></script>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.css">
+
+<div class="product-collections-showcase page-width">
+  <div class="collections-container">
+    <!-- 左侧导航区 -->
+    <div class="collections-nav leftside">
+      <ul class="collections-list" role="list">
+        {% for block in section.blocks %}
+          {% if block.type == 'collection_item' %}
+            <li class="collections-item {% if forloop.first %}is-active{% endif %}" 
+                data-collection-index="{{ forloop.index0 }}">
+              <a href="{{ collections[block.settings.collection].url }}" 
+                 class="collections-link">
+                {{ block.settings.collection_name | default: collections[block.settings.collection].title }}
+              </a>
+            </li>
+          {% endif %}
+        {% endfor %}
+      </ul>
+    </div>
+
+    <!-- 右侧内容区 -->
+    <div class="collections-content rightside">
+      {% for block in section.blocks %}
+        {% if block.type == 'collection_item' %}
+          {% assign collection = collections[block.settings.collection] %}
+          <div class="collection-showcase {% if forloop.first %}is-active{% endif %}" 
+               data-collection-index="{{ forloop.index0 }}">
+            
+            <!-- Swiper轮播容器 -->
+            <div class="swiper collections-swiper" data-swiper-id="shopslider-{{ forloop.index0 }}">
+              <div class="swiper-wrapper">
+                {% for product in collection.products limit: section.settings.products_limit %}
+                  <div class="swiper-slide">
+                    <div class="product-card">
+                      <!-- 产品图片区域 -->
+                      <div class="product-image">
+                        <a href="{{ product.url }}" class="product-link">
+                          {% if product.featured_media %}
+                            {{ product.featured_media | image_url: width: 750 | image_tag:
+                              loading: 'lazy',
+                              class: 'product-img',
+                              sizes: '100vw',
+                              widths: '375, 550, 750',
+                              alt: product.featured_media.alt | default: product.title
+                            }}
+                          {% else %}
+                            <div class="product-img placeholder">
+                              {{ 'image' | placeholder_svg_tag: 'placeholder-svg' }}
+                            </div>
+                          {% endif %}
+                        </a>
+                      </div>
+                      
+                      <!-- 悬停效果区域 -->
+                      <div class="product-hover-content">
+                        <h2 class="product-title">
+                          <small>{{ product.title }}</small>
+                        </h2>
+                      </div>
+                    </div>
+                  </div>
+                {% endfor %}
+              </div>
+              
+              <!-- 导航控制按钮 -->
+              <div class="swiper-navigation">
+                <div class="swiper-button-prev" data-swiper-id="shopslider-{{ forloop.index0 }}" aria-label="Previous product">
+                  <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    <path d="M15 18L9 12L15 6" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                  </svg>
+                </div>
+                <div class="swiper-button-next" data-swiper-id="shopslider-{{ forloop.index0 }}" aria-label="Next product">
+                  <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    <path d="M9 6L15 12L9 18" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                  </svg>
+                </div>
+              </div>
+            </div>
+
+            <!-- View Collection 按钮 -->
+            <div class="collection-cta">
+              <a href="{{ collection.url }}" class="view-collection-btn">
+                <span>{{ section.settings.cta_text | default: 'View Collection' }}</span>
+                <span class="btn-underline"></span>
+              </a>
+            </div>
+          </div>
+        {% endif %}
+      {% endfor %}
+    </div>
+  </div>
+</div>
+
+{% schema %}
+{
+  "name": "Product Collections Showcase",
+  "tag": "section",
+  "class": "section",
+  "settings": [
+    {
+      "type": "number",
+      "id": "products_limit",
+      "label": "Products per collection",
+      "default": 8,
+      "info": "Maximum number of products to show in each collection carousel"
+    },
+    {
+      "type": "text",
+      "id": "cta_text",
+      "label": "Call to action text",
+      "default": "View Collection"
+    }
+  ],
+  "blocks": [
+    {
+      "type": "collection_item",
+      "name": "Collection",
+      "settings": [
+        {
+          "type": "collection",
+          "id": "collection",
+          "label": "Collection"
+        },
+        {
+          "type": "text",
+          "id": "collection_name",
+          "label": "Custom collection name",
+          "info": "Leave empty to use collection title"
+        }
+      ]
+    }
+  ],
+  "presets": [
+    {
+      "name": "Product Collections Showcase",
+      "blocks": [
+        {
+          "type": "collection_item"
+        },
+        {
+          "type": "collection_item"
+        },
+        {
+          "type": "collection_item"
+        },
+        {
+          "type": "collection_item"
+        },
+        {
+          "type": "collection_item"
+        }
+      ]
+    }
+  ]
+}
+{% endschema %} 
